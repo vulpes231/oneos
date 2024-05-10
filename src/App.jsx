@@ -1,32 +1,23 @@
-import { ConnectWallet } from "@thirdweb-dev/react";
-import "./styles/Home.css";
-import React from "react";
+import { useContract, useContractRead } from "@thirdweb-dev/react";
+
+import React, { useEffect, useState } from "react";
 import Landing from "./components/Landing";
+import { CONTRACT_ADDRESS } from "./constants";
+import Navbar from "./components/Navbar";
 
 export default function Home() {
-  return (
-    <main className="main">
-      <div className="container">
-        <div className="header">
-          <h1 className="title">
-            Welcome to{" "}
-            <span className="gradient-text-0">
-              <a
-                href="https://thirdweb.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Oneos.
-              </a>
-            </span>
-          </h1>
+  const { contract } = useContract(CONTRACT_ADDRESS);
 
-          <div className="connect">
-            <ConnectWallet />
-          </div>
-        </div>
-        <Landing />
-      </div>
-    </main>
+  const { data: owner, isLoading: isOwnerLoading } = useContractRead(
+    contract,
+    "getOwner"
+  );
+
+  return (
+    <>
+      <Navbar />
+
+      <Landing loading={isOwnerLoading} owner={owner} />
+    </>
   );
 }
